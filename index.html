@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tokenomics Escolar - U.E. Bichito de Luz Nuestra Señora de Itatí</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        school: {
+                            50: '#f0f4fe',
+                            100: '#dde6fc',
+                            500: '#1d4ed8',
+                            600: '#1e40af',
+                            700: '#1e3a8a',
+                            800: '#1e293b',
+                            gold: '#f59e0b',
+                            goldDark: '#d97706',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gold-gradient {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #0f172a 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+    <!-- APP CONTAINER -->
+    <div id="app" class="flex-1 flex flex-col">
+
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-8 relative overflow-hidden">
+                <div class="h-2 w-full gold-gradient absolute top-0 left-0"></div>
+                
+                <div class="text-center mb-6">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 text-blue-900 mb-3 shadow-inner">
+                        <i class="fa-solid fa-coins text-3xl text-amber-500"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-slate-900">U.E. Bichito de Luz<br><span class="text-blue-700">Nuestra Señora de Itatí</span></h1>
+                    <p class="text-xs text-slate-500 mt-1 uppercase tracking-wider font-semibold">Tokenomics Escolar • La Paz, Bolivia</p>
+                    <p class="text-sm text-slate-600 mt-2 font-medium">Acceso Docente</p>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Docente / Profesor</label>
+                        <select id="teacherSelect" onchange="toggleCustomTeacher(this.value)" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="Tokenomics">Tokenomics</option>
+                            <option value="custom">+ Nuevo Profesor...</option>
+                        </select>
+                    </div>
+
+                    <div id="customTeacherInputGroup" class="hidden">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nombre completo del Docente</label>
+                        <input type="text" id="customTeacherName" placeholder="Ej: Prof. Nombre" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Contraseña</label>
+                        <div class="relative">
+                            <input type="password" id="teacherPassword" placeholder="••••••••" required class="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600">
+                                <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="loginError" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs rounded-lg p-3 text-center font-medium">
+                        <i class="fa-solid fa-circle-exclamation mr-1"></i> Contraseña incorrecta.
+                    </div>
+
+                    <button type="submit" class="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-bold rounded-lg shadow-md transition duration-200 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        <span>Ingresar al Sistema</span>
+                    </button>
+                </form>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 text-center text-xs text-slate-400">
+                    2026 • "Calidad y Virtud en Educación"
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN DASHBOARD NAV -->
+        <header class="header-gradient text-white shadow-lg sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div class="flex items-center space-x-3 text-center sm:text-left">
+                    <div class="w-10 h-10 rounded-full bg-amber-400 flex items-center justify-center text-blue-900 font-bold shadow-md">
+                        <i class="fa-solid fa-award text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base sm:text-lg leading-tight">U.E. Bichito de Luz "Nuestra Señora de Itatí"</h1>
+                        <p class="text-xs text-blue-200 flex items-center justify-center sm:justify-start gap-2">
+                            <span><i class="fa-solid fa-school text-amber-300"></i> Sistema de Tokenomics Escolar</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- USER LOGGED INFO & FORM LINK -->
+                <div class="flex items-center space-x-3">
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSexQ6905weSgu8rycUGVH-LSw_NOtfqf9NdXfxe1gaefCLhbg/viewform?usp=publish-editor" target="_blank" class="bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-xs px-3 py-1.5 rounded-full shadow flex items-center gap-1.5 transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        <span>Formulario Estudiantes</span>
+                    </a>
+                    
+                    <div class="flex items-center space-x-3 bg-white/10 px-3.5 py-1.5 rounded-full backdrop-blur-md border border-white/20">
+                        <div class="text-right text-xs">
+                            <p class="text-slate-300">Sesión activa:</p>
+                            <p id="activeTeacherName" class="font-bold text-amber-300">Tokenomics</p>
+                        </div>
+                        <button onclick="logout()" title="Cerrar Sesión" class="w-8 h-8 rounded-full bg-rose-500/80 hover:bg-rose-600 text-white flex items-center justify-center text-xs transition shadow">
+                            <i class="fa-solid fa-power-off"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+            <!-- METRICS SUMMARY CARDS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Tokens en Circulación</p>
+                        <h3 id="statTotalTokens" class="text-2xl font-black text-blue-700 mt-1">0</h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Moneda escolar "BichitoCoin"</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-coins"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Estudiantes Registrados</p>
+                        <h3 id="statTotalStudents" class="text-2xl font-black text-slate-800 mt-1">0</h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Guardados localmente</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Recompensas Pendientes</p>
+                        <h3 id="statPendingRewards" class="text-2xl font-black text-amber-600 mt-1">0</h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Por aprobar</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Estado de Sync</p>
+                        <h3 id="syncStatusText" class="text-2xl font-black text-indigo-600 mt-1">Listo</h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Conectado a Forms</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-database"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABS & ACTIONS NAVBAR -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-2 flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="flex items-center space-x-1 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                    <button onclick="switchTab('students')" id="tabBtn-students" class="px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 bg-blue-50 text-blue-700">
+                        <i class="fa-solid fa-user-graduate"></i>
+                        <span>Lista de Estudiantes</span>
+                    </button>
+                    <button onclick="switchTab('rewards')" id="tabBtn-rewards" class="px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-store"></i>
+                        <span>Solicitudes de Canje</span>
+                        <span id="badgePendingCount" class="bg-amber-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold ml-1">0</span>
+                    </button>
+                    <button onclick="switchTab('history')" id="tabBtn-history" class="px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 text-slate-600 hover:bg-slate-100">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Bitácora de Transacciones</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-2 w-full md:w-auto justify-end">
+                    <button onclick="fetchGoogleFormsData()" class="px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg transition shadow flex items-center space-x-1.5">
+                        <i class="fa-solid fa-sync" id="syncIcon"></i>
+                        <span>Sincronizar Forms</span>
+                    </button>
+                    <button onclick="openAddStudentModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs rounded-lg transition shadow flex items-center space-x-1.5">
+                        <i class="fa-solid fa-user-plus"></i>
+                        <span>Nuevo Estudiante</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIEW 1: STUDENTS MANAGEMENT -->
+            <div id="view-students" class="space-y-4">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+                        <div class="relative w-full sm:w-72">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-sm"></i>
+                            <input type="text" id="searchStudent" oninput="renderStudents()" placeholder="Buscar estudiante..." class="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+
+                        <!-- ORGANIZAR / FILTRAR POR CURSO -->
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <label class="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fa-solid fa-filter text-blue-600"></i>
+                                <span>Curso:</span>
+                            </label>
+                            <select id="filterCourse" onchange="renderStudents()" class="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="ALL">Todos los Cursos</option>
+                                <option value="1ro de Secundaria">1ro de Secundaria</option>
+                                <option value="2do de Secundaria">2do de Secundaria</option>
+                                <option value="3ro de Secundaria">3ro de Secundaria</option>
+                                <option value="4to de Secundaria">4to de Secundaria</option>
+                                <option value="5to de Secundaria">5to de Secundaria</option>
+                                <option value="6to de Secundaria">6to de Secundaria</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="p-3">Estudiante</th>
+                                    <th class="p-3 text-center">Curso</th>
+                                    <th class="p-3 text-center">Saldo Tokens</th>
+                                    <th class="p-3 text-center">Estado Económico</th>
+                                    <th class="p-3 text-right">Acciones de Docente</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody" class="divide-y divide-slate-200 text-sm">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 2: REWARDS & SOLICITUDES -->
+            <div id="view-rewards" class="hidden space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-clock text-amber-500"></i>
+                            <span>Solicitudes de Canje (Google Forms)</span>
+                        </h2>
+                        <button onclick="fetchGoogleFormsData()" class="text-xs text-blue-600 hover:underline font-semibold flex items-center gap-1">
+                            <i class="fa-solid fa-rotate"></i> Comprobar respuestas
+                        </button>
+                    </div>
+                    <div id="pendingRewardsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <!-- Dynamic JS Injection -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW 3: HISTORY LOG -->
+            <div id="view-history" class="hidden space-y-4">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 mb-4">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-800">Bitácora Transaccional del Ecosistema</h2>
+                            <p class="text-xs text-slate-500">Historial completo de canjes y ajustes</p>
+                        </div>
+                        <button onclick="clearHistoryLog()" class="text-xs text-rose-600 hover:underline font-medium">
+                            <i class="fa-solid fa-trash-can mr-1"></i> Limpiar Historial
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-lg border border-slate-200">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                    <th class="p-3">Fecha y Hora</th>
+                                    <th class="p-3">Profesor Operador</th>
+                                    <th class="p-3">Estudiante</th>
+                                    <th class="p-3 text-center">Tipo</th>
+                                    <th class="p-3 text-center">Monto</th>
+                                    <th class="p-3">Motivo / Justificación</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody" class="divide-y divide-slate-200 text-sm">
+                                <!-- Dynamic JS Injection -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- FOOTER -->
+        <footer class="bg-white border-t border-slate-200 mt-auto py-4 text-center text-xs text-slate-500">
+            <p class="font-semibold text-slate-700">Unidad Educativa "Bichito de Luz Nuestra Señora de Itatí"</p>
+            <p class="mt-0.5">Proyecto de Tokenomics Escolar • La Paz, Bolivia</p>
+        </footer>
+    </div>
+
+    <!-- MODAL: ADD / DEDUCT TOKENS -->
+    <div id="tokenModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 relative">
+            <button onclick="closeTokenModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-4">
+                <div id="modalIconContainer" class="w-10 h-10 rounded-full flex items-center justify-center text-lg">
+                    <i id="modalActionIcon" class="fa-solid fa-plus"></i>
+                </div>
+                <div>
+                    <h3 id="modalTitle" class="text-base font-bold text-slate-800">Añadir Tokens</h3>
+                    <p id="modalStudentName" class="text-xs font-semibold text-blue-700">Estudiante...</p>
+                </div>
+            </div>
+
+            <form onsubmit="handleTokenSubmit(event)" class="space-y-4">
+                <input type="hidden" id="modalStudentId">
+                <input type="hidden" id="modalActionType" value="ADD">
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Cantidad de Tokens</label>
+                    <div class="relative">
+                        <input type="number" id="modalAmount" min="1" max="200" value="10" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="absolute right-3 top-2 text-xs font-bold text-amber-600">TOKENS</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Motivo / Justificación (Obligatorio)</label>
+                    <textarea id="modalReason" rows="3" required placeholder="Escriba la razón detallada del ajuste..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <div class="pt-2 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closeTokenModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">Cancelar</button>
+                    <button type="submit" id="modalSubmitBtn" class="px-4 py-2 text-white text-xs font-bold rounded-lg shadow transition flex items-center space-x-1.5">
+                        <i class="fa-solid fa-check"></i>
+                        <span>Confirmar Transacción</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD NEW STUDENT -->
+    <div id="addStudentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm hidden p-4">
+        <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 relative">
+            <button onclick="closeAddStudentModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-user-plus text-emerald-600"></i>
+                <span>Registrar Nuevo Estudiante</span>
+            </h3>
+
+            <form onsubmit="handleAddStudent(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Nombre Completo</label>
+                    <input type="text" id="newStudentName" required placeholder="Ej: Mateo Quispe Mamani" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Curso</label>
+                    <select id="newStudentCourse" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold">
+                        <option value="1ro de Secundaria">1ro de Secundaria</option>
+                        <option value="2do de Secundaria">2do de Secundaria</option>
+                        <option value="3ro de Secundaria">3ro de Secundaria</option>
+                        <option value="4to de Secundaria">4to de Secundaria</option>
+                        <option value="5to de Secundaria">5to de Secundaria</option>
+                        <option value="6to de Secundaria">6to de Secundaria</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Saldo Inicial de Tokens</label>
+                    <input type="number" id="newStudentTokens" min="0" value="50" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                </div>
+
+                <div class="pt-2 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closeAddStudentModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg">Cancelar</button>
+                    <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow transition">Guardar Estudiante</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyBF3W-qGru8nyi6v5g44WIK-JwxsP6rZapboNXPXi016BBTFMKBxH1G1-fl-oWi_Y-9g/exec"; 
+
+        const STORAGE_KEY_STUDENTS = 'tokenomics_students_v8';
+        const STORAGE_KEY_PENDING = 'tokenomics_pending_v8';
+        const STORAGE_KEY_HISTORY = 'tokenomics_history_v8';
+        const STORAGE_KEY_PROCESSED = 'tokenomics_processed_v8';
+
+        const DEFAULT_STUDENTS = [
+            { id: 1, name: "Nelson Leandro Lavadenz Alba", course: "1ro de Secundaria", tokens: 100 }
+        ];
+
+        let students = getSafeStorage(STORAGE_KEY_STUDENTS, DEFAULT_STUDENTS);
+        let pendingRewards = getSafeStorage(STORAGE_KEY_PENDING, []);
+        let historyLog = getSafeStorage(STORAGE_KEY_HISTORY, []);
+        let processedSignatures = getSafeStorage(STORAGE_KEY_PROCESSED, []);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderStudents();
+            renderPendingRewards();
+            renderHistoryLog();
+            updateStats();
+            fetchGoogleFormsData();
+        });
+
+        function getSafeStorage(key, defaultValue) {
+            try {
+                const data = localStorage.getItem(key);
+                return data ? JSON.parse(data) : defaultValue;
+            } catch (e) {
+                return defaultValue;
+            }
+        }
+
+        function saveData() {
+            try {
+                localStorage.setItem(STORAGE_KEY_STUDENTS, JSON.stringify(students));
+                localStorage.setItem(STORAGE_KEY_PENDING, JSON.stringify(pendingRewards));
+                localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(historyLog));
+                localStorage.setItem(STORAGE_KEY_PROCESSED, JSON.stringify(processedSignatures));
+            } catch (e) {}
+        }
+
+        async function fetchGoogleFormsData() {
+            if (!GOOGLE_SCRIPT_URL) return;
+
+            const syncIcon = document.getElementById('syncIcon');
+            if (syncIcon) syncIcon.classList.add('fa-spin');
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const data = await response.json();
+
+                data.forEach(item => {
+                    const timeStamp = item.timestamp || "";
+                    const studentName = item.nombre;
+                    const studentCourse = item.curso || "1ro de Secundaria";
+                    const rewardRequested = item.recompensa || "Solicitud General";
+
+                    if (!studentName) return;
+
+                    const signature = `${timeStamp}_${studentName}_${rewardRequested}`;
+
+                    if (processedSignatures.includes(signature)) return;
+                    if (pendingRewards.some(p => p.signature === signature)) return;
+
+                    let student = students.find(s => s.name.toLowerCase() === studentName.toLowerCase());
+                    if (!student) {
+                        student = {
+                            id: students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1,
+                            name: studentName,
+                            course: studentCourse,
+                            tokens: 50
+                        };
+                        students.push(student);
+                    }
+
+                    // Detección exacta según la nueva tabla de precios
+                    let cost = 30; // Valor genérico por defecto
+                    const reqLower = rewardRequested.toLowerCase();
+
+                    if (reqLower.includes("punto") || reqLower.includes("trabajo")) {
+                        cost = 60; // Punto extra en trabajo -> 60 tokens
+                    } else if (reqLower.includes("kiosco") || reqLower.includes("pase")) {
+                        cost = 50; // Pase preferencial al kiosco escolar -> 50 tokens
+                    } else if (reqLower.includes("revisión") || reqLower.includes("revision") || reqLower.includes("proyecto")) {
+                        cost = 50; // Revisión previa de proyecto -> 50 tokens
+                    } else if (reqLower.includes("prórroga") || reqLower.includes("prorroga") || reqLower.includes("24")) {
+                        cost = 40; // Prórroga de entrega (24 hrs.) -> 40 tokens
+                    } else if (reqLower.includes("fotocopia") || reqLower.includes("copia") || reqLower.includes("vale")) {
+                        cost = 30; // Vale de fotocopias (5 páginas) -> 30 tokens
+                    } else if (reqLower.includes("asiento") || reqLower.includes("cambio")) {
+                        cost = 30; // Cambio de asiento (1 semana) -> 30 tokens
+                    }
+
+                    pendingRewards.push({
+                        id: Date.now() + Math.random(),
+                        signature: signature,
+                        studentId: student.id,
+                        studentName: student.name,
+                        studentCourse: student.course,
+                        rewardTitle: rewardRequested,
+                        cost: cost,
+                        date: timeStamp || new Date().toLocaleString()
+                    });
+                });
+
+                saveData();
+                renderStudents();
+                renderPendingRewards();
+                updateStats();
+                document.getElementById('syncStatusText').innerText = "Sincronizado";
+            } catch (error) {
+                document.getElementById('syncStatusText').innerText = "Modo Local";
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('fa-spin');
+            }
+        }
+
+        // INICIO DE SESIÓN
+        function handleLogin(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            const passwordInput = document.getElementById('teacherPassword').value.trim();
+            const teacherSelect = document.getElementById('teacherSelect').value;
+            const customTeacherName = document.getElementById('customTeacherName').value.trim();
+
+            if (passwordInput === "123456") {
+                let activeTeacher = teacherSelect === 'custom' ? customTeacherName : teacherSelect;
+                if (!activeTeacher) activeTeacher = "Prof. Cesar Gonzales Barreda";
+
+                document.getElementById('activeTeacherName').innerText = activeTeacher;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('loginError').classList.add('hidden');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+
+            return false;
+        }
+
+        function toggleCustomTeacher(value) {
+            const customGroup = document.getElementById('customTeacherInputGroup');
+            if (value === 'custom') customGroup.classList.remove('hidden');
+            else customGroup.classList.add('hidden');
+        }
+
+        function togglePasswordVisibility() {
+            const pwdInput = document.getElementById('teacherPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (pwdInput.type === 'password') {
+                pwdInput.type = 'text';
+                eyeIcon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                pwdInput.type = 'password';
+                eyeIcon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('teacherPassword').value = '';
+        }
+
+        function switchTab(tab) {
+            document.getElementById('view-students').classList.add('hidden');
+            document.getElementById('view-rewards').classList.add('hidden');
+            document.getElementById('view-history').classList.add('hidden');
+
+            document.getElementById('tabBtn-students').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 text-slate-600 hover:bg-slate-100";
+            document.getElementById('tabBtn-rewards').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 text-slate-600 hover:bg-slate-100";
+            document.getElementById('tabBtn-history').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 text-slate-600 hover:bg-slate-100";
+
+            if (tab === 'students') {
+                document.getElementById('view-students').classList.remove('hidden');
+                document.getElementById('tabBtn-students').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 bg-blue-50 text-blue-700";
+            } else if (tab === 'rewards') {
+                document.getElementById('view-rewards').classList.remove('hidden');
+                document.getElementById('tabBtn-rewards').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 bg-blue-50 text-blue-700";
+            } else if (tab === 'history') {
+                document.getElementById('view-history').classList.remove('hidden');
+                document.getElementById('tabBtn-history').className = "px-4 py-2 rounded-lg text-sm font-bold transition flex items-center space-x-2 bg-blue-50 text-blue-700";
+            }
+        }
+
+        // RENDERIZAR ESTUDIANTES CON FILTRO DE CURSO Y BUSCADOR
+        function renderStudents() {
+            const tableBody = document.getElementById('studentsTableBody');
+            const search = document.getElementById('searchStudent').value.toLowerCase();
+            const selectedCourse = document.getElementById('filterCourse').value;
+
+            const filtered = students.filter(st => {
+                const matchesSearch = st.name.toLowerCase().includes(search);
+                const matchesCourse = selectedCourse === 'ALL' || (st.course && st.course === selectedCourse);
+                return matchesSearch && matchesCourse;
+            });
+
+            if (filtered.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-xs text-slate-400">No se encontraron estudiantes en este curso.</td></tr>`;
+                return;
+            }
+
+            tableBody.innerHTML = filtered.map(st => {
+                let badgeColor = "bg-emerald-100 text-emerald-800";
+                let statusText = "Sostenible";
+                if (st.tokens > 120) {
+                    badgeColor = "bg-amber-100 text-amber-800";
+                    statusText = "Alto Saldo";
+                } else if (st.tokens < 30) {
+                    badgeColor = "bg-rose-100 text-rose-800";
+                    statusText = "Saldo Bajo";
+                }
+
+                return `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="p-3 font-semibold text-slate-900">${st.name}</td>
+                        <td class="p-3 text-center font-medium text-slate-600">${st.course || "1ro de Secundaria"}</td>
+                        <td class="p-3 text-center font-bold text-blue-700 text-base">${st.tokens} <span class="text-[10px] text-amber-500">T</span></td>
+                        <td class="p-3 text-center"><span class="text-[11px] font-bold px-2 py-0.5 rounded-full ${badgeColor}">${statusText}</span></td>
+                        <td class="p-3 text-right space-x-1">
+                            <button onclick="openTokenModal(${st.id}, 'ADD')" class="px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs font-semibold shadow-sm transition"><i class="fa-solid fa-plus mr-1"></i>Añadir</button>
+                            <button onclick="openTokenModal(${st.id}, 'DEDUCT')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-white rounded text-xs font-semibold shadow-sm transition"><i class="fa-solid fa-minus mr-1"></i>Descontar</button>
+                            <button onclick="deleteStudent(${st.id})" class="px-2 py-1 bg-rose-500 hover:bg-rose-600 text-white rounded text-xs font-semibold shadow-sm transition" title="Borrar Estudiante"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // FUNCION PARA BORRAR UN ESTUDIANTE
+        function deleteStudent(studentId) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            if (confirm(`¿Estás seguro de que deseas eliminar al estudiante "${student.name}" del sistema?`)) {
+                students = students.filter(s => s.id !== studentId);
+                saveData();
+                renderStudents();
+                updateStats();
+            }
+        }
+
+        function renderPendingRewards() {
+            const container = document.getElementById('pendingRewardsContainer');
+            document.getElementById('badgePendingCount').innerText = pendingRewards.length;
+
+            if (pendingRewards.length === 0) {
+                container.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-200">No hay solicitudes de canje pendientes.</div>`;
+                return;
+            }
+
+            container.innerHTML = pendingRewards.map(req => `
+                <div class="p-3 bg-amber-50/60 border border-amber-200 rounded-lg flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-bold text-slate-800">${req.studentName} <span class="text-[10px] text-slate-500">(${req.studentCourse})</span></p>
+                        <p class="text-[11px] text-amber-800 font-medium">${req.rewardTitle} (${req.cost} Tokens)</p>
+                        <p class="text-[10px] text-slate-400">${req.date}</p>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <button onclick="approveReward('${req.id}')" class="p-1.5 bg-emerald-600 text-white rounded hover:bg-emerald-700 text-xs shadow" title="Aprobar y Descontar"><i class="fa-solid fa-check"></i></button>
+                        <button onclick="rejectReward('${req.id}')" class="p-1.5 bg-rose-500 text-white rounded hover:bg-rose-600 text-xs shadow" title="Rechazar"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderHistoryLog() {
+            const body = document.getElementById('historyTableBody');
+            if (historyLog.length === 0) {
+                body.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-xs text-slate-400">Aún no se han registrado transacciones.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = historyLog.map(log => `
+                <tr class="hover:bg-slate-50 transition text-xs">
+                    <td class="p-3 text-slate-500 font-mono">${log.date}</td>
+                    <td class="p-3 font-semibold text-slate-700">${log.teacher}</td>
+                    <td class="p-3 font-bold text-slate-800">${log.studentName}</td>
+                    <td class="p-3 text-center"><span class="px-2 py-0.5 rounded-full font-bold ${log.type === 'ADD' ? 'bg-blue-100 text-blue-800' : 'bg-rose-100 text-rose-800'}">${log.type === 'ADD' ? 'Aumento' : 'Descuento'}</span></td>
+                    <td class="p-3 text-center font-extrabold ${log.type === 'ADD' ? 'text-blue-700' : 'text-rose-600'}">${log.type === 'ADD' ? '+' : '-'}${log.amount} T</td>
+                    <td class="p-3 text-slate-600">${log.reason}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateStats() {
+            const totalTokens = students.reduce((acc, st) => acc + st.tokens, 0);
+            document.getElementById('statTotalTokens').innerText = totalTokens;
+            document.getElementById('statTotalStudents').innerText = students.length;
+            document.getElementById('statPendingRewards').innerText = pendingRewards.length;
+        }
+
+        function approveReward(id) {
+            const reqIndex = pendingRewards.findIndex(r => r.id == id);
+            if (reqIndex === -1) return;
+
+            const req = pendingRewards[reqIndex];
+            const student = students.find(s => s.id === req.studentId);
+            const activeTeacher = document.getElementById('activeTeacherName').innerText;
+
+            if (student && student.tokens >= req.cost) {
+                student.tokens -= req.cost;
+                const dateStr = new Date().toLocaleString();
+
+                historyLog.unshift({
+                    date: dateStr,
+                    teacher: activeTeacher,
+                    studentName: student.name,
+                    type: 'DEDUCT',
+                    amount: req.cost,
+                    reason: `Canje aprobado: ${req.rewardTitle}`
+                });
+
+                if (req.signature && !processedSignatures.includes(req.signature)) {
+                    processedSignatures.push(req.signature);
+                }
+
+                pendingRewards.splice(reqIndex, 1);
+                saveData();
+                renderPendingRewards();
+                renderStudents();
+                renderHistoryLog();
+                updateStats();
+            } else {
+                alert("El estudiante no dispone de tokens suficientes para este canje.");
+            }
+        }
+
+        function rejectReward(id) {
+            const req = pendingRewards.find(r => r.id == id);
+            if (req && req.signature) {
+                if (!processedSignatures.includes(req.signature)) {
+                    processedSignatures.push(req.signature);
+                }
+            }
+            pendingRewards = pendingRewards.filter(r => r.id != id);
+            saveData();
+            renderPendingRewards();
+            updateStats();
+        }
+
+        function openTokenModal(studentId, actionType) {
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            document.getElementById('modalStudentId').value = student.id;
+            document.getElementById('modalActionType').value = actionType;
+            document.getElementById('modalStudentName').innerText = `${student.name} (${student.course}) - Saldo: ${student.tokens} T`;
+            document.getElementById('modalAmount').value = 10;
+            document.getElementById('modalReason').value = '';
+
+            document.getElementById('tokenModal').classList.remove('hidden');
+        }
+
+        function closeTokenModal() {
+            document.getElementById('tokenModal').classList.add('hidden');
+        }
+
+        function handleTokenSubmit(event) {
+            event.preventDefault();
+            const studentId = parseInt(document.getElementById('modalStudentId').value);
+            const actionType = document.getElementById('modalActionType').value;
+            const amount = parseInt(document.getElementById('modalAmount').value);
+            const reason = document.getElementById('modalReason').value.trim();
+            const activeTeacher = document.getElementById('activeTeacherName').innerText;
+
+            const student = students.find(s => s.id === studentId);
+            if (!student) return;
+
+            if (actionType === 'DEDUCT' && student.tokens < amount) {
+                alert("El estudiante no tiene saldo suficiente.");
+                return;
+            }
+
+            if (actionType === 'ADD') student.tokens += amount;
+            else student.tokens -= amount;
+
+            historyLog.unshift({
+                date: new Date().toLocaleString(),
+                teacher: activeTeacher,
+                studentName: student.name,
+                type: actionType,
+                amount: amount,
+                reason: reason
+            });
+
+            saveData();
+            closeTokenModal();
+            renderStudents();
+            renderHistoryLog();
+            updateStats();
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('newStudentName').value = '';
+            document.getElementById('newStudentCourse').value = '1ro de Secundaria';
+            document.getElementById('newStudentTokens').value = 50;
+            document.getElementById('addStudentModal').classList.remove('hidden');
+        }
+
+        function closeAddStudentModal() {
+            document.getElementById('addStudentModal').classList.add('hidden');
+        }
+
+        function handleAddStudent(event) {
+            event.preventDefault();
+            const name = document.getElementById('newStudentName').value.trim();
+            const course = document.getElementById('newStudentCourse').value;
+            const tokens = parseInt(document.getElementById('newStudentTokens').value) || 0;
+
+            const newId = students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1;
+            students.push({ id: newId, name, course, tokens });
+
+            saveData();
+            closeAddStudentModal();
+            renderStudents();
+            updateStats();
+        }
+
+        function clearHistoryLog() {
+            if (confirm("¿Deseas limpiar el historial de la bitácora?")) {
+                historyLog = [];
+                saveData();
+                renderHistoryLog();
+            }
+        }
+    </script>
+</body>
+</html>
